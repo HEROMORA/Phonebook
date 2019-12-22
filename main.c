@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 
 #include "io.h"
 #include "useroptions.h"
 #include "validation.h"
+
 #if defined(_WIN32)
     #define PLATFORM_NAME "windows" // Windows
+    #include <conio.h>
 #elif defined(__linux__)
     #define PLATFORM_NAME "linux"
+    #include <curses.h>
 #endif
 int Count = 0;
 Contact *Contacts ;
@@ -126,8 +128,8 @@ void main() {
                         printf("Command not recognized\n");
                 }
         }
-        printf("Press any key to continue");
-        getch();
+        printf("Press any key to continue\n\n\n");
+        getchar();
     }
 }
 
@@ -146,8 +148,11 @@ void showMenu() {
 }
 //checks OS version and clears the screen
 void clearScreen(){
-    if(PLATFORM_NAME == "windows")
+    if(!strcmp(PLATFORM_NAME, "windows"))
         system("cls");
-    else if (PLATFORM_NAME == "linux")
-        system("clear");
+    else if (!strcmp(PLATFORM_NAME, "linux")) {
+
+        //printf("\033[H\033[J");
+         //clear();
+    }
 }

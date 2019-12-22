@@ -5,6 +5,138 @@
 #include "models.h"
 #include "validation.h"
 
+//for multi search
+Contact** enhancedSearch(Contact* targetContacts, int length, char* key, char* mode, int* num)
+{
+    int i = 0;
+    int j = 0;
+    Contact** contacts = (Contact**)malloc(1 * sizeof(Contact));
+
+    if (!strcmp(key, "")) {
+        contacts = &targetContacts;
+        *num = length;
+        return contacts;
+    }
+    else if (!strcasecmp("l", mode))
+    {
+        for (i = 0; i < length; i++)
+        {
+            char *pch = stristr(targetContacts[i].lastName, key);
+            if (pch) {
+                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
+                contacts[j] = &targetContacts[i];
+                j++;
+            }
+        }
+        *num = j;
+        if (!j) return NULL;
+        return contacts;
+    }
+    else if (!strcasecmp("f", mode))
+    {
+        for (i = 0; i < length; i++)
+        {
+
+            char *pch = stristr(targetContacts[i].firstName, key);
+            if (pch) {
+                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
+                contacts[j] = &targetContacts[i];
+                j++;
+            }
+        }
+        *num = j;
+        if (!j) return NULL;
+        return contacts;
+    }
+    else if (!strcasecmp("s", mode))
+    {
+        for (i = 0; i < length; i++)
+        {
+            char *pch = stristr(targetContacts[i].stName, key);
+            if (pch) {
+                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
+                contacts[j] = &targetContacts[i];
+                j++;
+            }
+        }
+        *num = j;
+        if (!j) return NULL;
+        return contacts;
+    }
+    else if (!strcasecmp("e", mode))
+    {
+        for (i = 0; i < length; i++)
+        {
+            char *pch = stristr(targetContacts[i].email, key);
+            if (pch) {
+                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
+                contacts[j] = &targetContacts[i];
+                j++;
+            }
+        }
+        *num = j;
+        if (!j) return NULL;
+        return contacts;
+    }
+    else if (!strcasecmp("p", mode))
+    {
+        for (i = 0; i < length; i++)
+        {
+            char *pch = stristr(targetContacts[i].phoneNum, key);
+            if (pch) {
+                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
+                contacts[j] = &targetContacts[i];
+                j++;
+            }
+        }
+        *num = j;
+        if (!j) return NULL;
+        return contacts;
+    }
+    else if (!strcasecmp("d", mode))
+    {
+        DateOfBirth birthday = *BirthdayConstructor(key);
+        int day = atoi(birthday.day);
+        int month = atoi(birthday.month);
+        int year = atoi(birthday.year);
+
+        for (i = 0; i < length; i++)
+        {
+            int targetDay = atoi(targetContacts[i].dateOfBirth.day);
+            int targetMonth = atoi(targetContacts[i].dateOfBirth.month);
+            int targetYear = atoi(targetContacts[i].dateOfBirth.year);
+            if (targetDay == day && targetMonth == month && targetYear == year) {
+                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
+                contacts[j] = &targetContacts[i];
+                j++;
+            }
+        }
+        *num = j;
+        if (!j) return NULL;
+        return contacts;
+        /*
+        for (i = 0; i < length; i++)
+        {
+            char *pch = stristr(targetContacts[i].phoneNum, key);
+            if (pch) {
+                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
+                contacts[j] = &targetContacts[i];
+                j++;
+            }
+        }
+        *num = j;
+        if (!j) return NULL;
+        return contacts;
+         */
+    }
+    else
+    {
+        printf("mode not detected\n");
+    }
+
+
+}
+
 void add_new_contact()
 {
     char name[15];
@@ -80,6 +212,7 @@ void delete_contact()
     //printf("Please enter the first and last name of the contact ex'Ahmed Muhammed':\n");
     //scanf("%s %s", firstName, lastName);
 
+
     printf("Please enter the first name:\n");
     strcpy(firstName, readInput(firstName, sizeof(firstName)));
     strcpy(firstName, v_name(firstName));
@@ -89,7 +222,7 @@ void delete_contact()
     strcpy(lastName, v_name(lastName));
 
 
-    Contact** contacts = (Contact**)malloc(1 *sizeof(Contact));
+    Contact** contacts = (Contact**)malloc(1 *sizeof(Contact*));
     for (i = 0; i < Count; i++){
         if (!strcasecmp(Contacts[i].lastName, lastName)) {
             if (!strcasecmp(Contacts[i].firstName, firstName)) {
@@ -115,6 +248,12 @@ void delete_contact()
 
     Contact* selectedContact = contacts[s - 1];
 
+    for (i = 0; i < Count; i++)
+    {
+        if (&Contacts[i] == selectedContact)
+            break;
+    }
+
     printf("You've chosen this contact:\n");
     printContact(*selectedContact);
 
@@ -123,6 +262,7 @@ void delete_contact()
 
     printf("Contact deleted successfully!\n\n");
     Count--;
+    Contacts = realloc(Contacts, sizeof(Contact) * Count);
 }
 
 void modify_contact()
@@ -265,137 +405,7 @@ void sort()
         printf("Command not recognized please try again!\n\n");
     }
 }
-//for multi search
-Contact** enhancedSearch(Contact* targetContacts, int length, char* key, char* mode, int* num)
-{
-    int i = 0;
-    int j = 0;
-    Contact** contacts = (Contact**)malloc(1 * sizeof(Contact));
 
-    if (!strcmp(key, "")) {
-        contacts = &targetContacts;
-        *num = length;
-        return contacts;
-    }
-    else if (!strcasecmp("l", mode))
-    {
-        for (i = 0; i < length; i++)
-        {
-            char *pch = stristr(targetContacts[i].lastName, key);
-            if (pch) {
-              contacts = realloc(contacts, sizeof(Contact) * (j + 1));
-              contacts[j] = &targetContacts[i];
-              j++;
-            }
-        }
-        *num = j;
-        if (!j) return NULL;
-        return contacts;
-    }
-    else if (!strcasecmp("f", mode))
-    {
-        for (i = 0; i < length; i++)
-        {
-
-            char *pch = stristr(targetContacts[i].firstName, key);
-            if (pch) {
-                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
-                contacts[j] = &targetContacts[i];
-                j++;
-            }
-        }
-        *num = j;
-        if (!j) return NULL;
-        return contacts;
-    }
-    else if (!strcasecmp("s", mode))
-    {
-        for (i = 0; i < length; i++)
-        {
-            char *pch = stristr(targetContacts[i].stName, key);
-            if (pch) {
-                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
-                contacts[j] = &targetContacts[i];
-                j++;
-            }
-        }
-        *num = j;
-        if (!j) return NULL;
-        return contacts;
-    }
-    else if (!strcasecmp("e", mode))
-    {
-        for (i = 0; i < length; i++)
-        {
-            char *pch = stristr(targetContacts[i].email, key);
-            if (pch) {
-                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
-                contacts[j] = &targetContacts[i];
-                j++;
-            }
-        }
-        *num = j;
-        if (!j) return NULL;
-        return contacts;
-    }
-    else if (!strcasecmp("p", mode))
-    {
-        for (i = 0; i < length; i++)
-        {
-            char *pch = stristr(targetContacts[i].phoneNum, key);
-            if (pch) {
-                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
-                contacts[j] = &targetContacts[i];
-                j++;
-            }
-        }
-        *num = j;
-        if (!j) return NULL;
-        return contacts;
-    }
-    else if (!strcasecmp("d", mode))
-    {
-        DateOfBirth birthday = *BirthdayConstructor(key);
-        int day = atoi(birthday.day);
-        int month = atoi(birthday.month);
-        int year = atoi(birthday.year);
-
-        for (i = 0; i < length; i++)
-        {
-            int targetDay = atoi(targetContacts[i].dateOfBirth.day);
-            int targetMonth = atoi(targetContacts[i].dateOfBirth.month);
-            int targetYear = atoi(targetContacts[i].dateOfBirth.year);
-            if (targetDay == day && targetMonth == month && targetYear == year) {
-                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
-                contacts[j] = &targetContacts[i];
-                j++;
-            }
-        }
-        *num = j;
-        if (!j) return NULL;
-        return contacts;
-        /*
-        for (i = 0; i < length; i++)
-        {
-            char *pch = stristr(targetContacts[i].phoneNum, key);
-            if (pch) {
-                contacts = realloc(contacts, sizeof(Contact) * (j + 1));
-                contacts[j] = &targetContacts[i];
-                j++;
-            }
-        }
-        *num = j;
-        if (!j) return NULL;
-        return contacts;
-         */
-    }
-    else
-    {
-        printf("mode not detected\n");
-    }
-
-
-}
 
 Contact** multiSearch()
 {
