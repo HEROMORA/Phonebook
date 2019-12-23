@@ -19,7 +19,6 @@ Contact *Contacts ;
 void showMenu();
 void clearScreen();
 
-//TODO write comments
 
 void main() {
     char fileName[30] = "contacts";
@@ -64,7 +63,6 @@ void main() {
                             printf("Please enter the contact's last name: \n");
                             strcpy(lastName, readInput(lastName, sizeof(lastName)));
                             strcpy(lastName, v_name(lastName));
-                            //scanf("%s", lastName);
 
                             int num = 0;
                             searchContacts(lastName, &num);
@@ -151,8 +149,7 @@ void clearScreen(){
     if(!strcmp(PLATFORM_NAME, "windows"))
         system("cls");
     else if (!strcmp(PLATFORM_NAME, "linux")) {
-
-        //printf("\033[H\033[J");
          //clear();
+         //Needs to be running on linux console which is not available on this ide
     }
 }
