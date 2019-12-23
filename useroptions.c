@@ -292,6 +292,7 @@ void modify_contact()
         flag = 1;
         scanf(" %c", &c);
         printf("Please enter the new value:\n");
+        scanf("\n");
         switch (c) {
             case ('L'):
                 //scanf("%14s", name);
